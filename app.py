@@ -3,6 +3,9 @@
 import streamlit as st
 from ui import show_home_page, show_resume_upload_page, show_interview_page
 from agents.orchestration_agent import OrchestrationAgent
+from dotenv import load_dotenv
+load_dotenv()  # This loads the .env file at the start of your script
+
 
 
 def main():
