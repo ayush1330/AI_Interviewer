@@ -1,7 +1,7 @@
 # ui.py
 
 import streamlit as st
-from utils.file_utils import save_uploaded_file, validate_file_type, is_file_size_valid
+from utils.file_utils import save_uploaded_file, validate_file_type, is_file_size_valid, extract_text_from_resume
 
 
 def show_home_page():
@@ -38,10 +38,15 @@ def show_resume_upload_page():
                 )
             else:
                 # Save the uploaded file
-                save_uploaded_file(uploaded_file)
+                file_path = save_uploaded_file(uploaded_file)
                 st.session_state["resume_uploaded"] = True
                 st.session_state["resume_saved"] = True
                 st.success("Thank you! Your resume has been successfully uploaded.")
+                
+                # Extract text from the resume
+                resume_text = extract_text_from_resume(file_path)
+                # Load the resume text into the orchestration agent
+                st.session_state["orchestration_agent"].load_resume(resume_text)
 
                 # Render the "Start Interview" button
                 if st.button("Start Interview"):
@@ -58,6 +63,8 @@ def show_resume_upload_page():
             st.write("Interview will start shortly...")
 
 
-def show_interview_page(orchestration_agent):
+def show_interview_page():
     st.header("Interview")
+    # Access orchestration_agent from st.session_state
+    orchestration_agent = st.session_state["orchestration_agent"]
     orchestration_agent.start_interview()
